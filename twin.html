@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Financial Twin</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>
+                    <ion-icon name="analytics-outline"></ion-icon>
+                    Financial Twin
+                </h1>
+                <p class="subtitle">10-Year Projection Engine</p>
+            </div>
+
+            <form id="inputForm" class="input-form">
+                <div class="form-group">
+                    <label for="monthlyIncome">
+                        <ion-icon name="cash-outline"></ion-icon>
+                        Monthly Income
+                    </label>
+                    <input type="number" id="monthlyIncome" value="6000" step="100" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="monthlyExpenses">
+                        <ion-icon name="card-outline"></ion-icon>
+                        Monthly Expenses
+                    </label>
+                    <input type="number" id="monthlyExpenses" value="4000" step="100" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="currentSavings">
+                        <ion-icon name="wallet-outline"></ion-icon>
+                        Current Savings
+                    </label>
+                    <input type="number" id="currentSavings" value="15000" step="1000" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="currentInvestments">
+                        <ion-icon name="trending-up-outline"></ion-icon>
+                        Current Investments
+                    </label>
+                    <input type="number" id="currentInvestments" value="25000" step="1000" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="goalCost">
+                        <ion-icon name="flag-outline"></ion-icon>
+                        Financial Goal ($)
+                    </label>
+                    <input type="number" id="goalCost" value="100000" step="5000" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="investmentGrowth">
+                        <ion-icon name="pulse-outline"></ion-icon>
+                        Investment Growth (% annual)
+                    </label>
+                    <input type="number" id="investmentGrowth" value="7" step="0.5" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="inflationRate">
+                        <ion-icon name="arrow-up-outline"></ion-icon>
+                        Inflation Rate (% annual)
+                    </label>
+                    <input type="number" id="inflationRate" value="3" step="0.5" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="savingsRate">
+                        <ion-icon name="save-outline"></ion-icon>
+                        Monthly Savings Rate (%)
+                    </label>
+                    <input type="number" id="savingsRate" value="30" step="5" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="riskTolerance">
+                        <ion-icon name="shield-outline"></ion-icon>
+                        Risk Tolerance
+                    </label>
+                    <select id="riskTolerance" required>
+                        <option value="conservative">Conservative</option>
+                        <option value="moderate" selected>Moderate</option>
+                        <option value="aggressive">Aggressive</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="scenario">
+                        <ion-icon name="git-branch-outline"></ion-icon>
+                        What-If Scenario
+                    </label>
+                    <select id="scenario" required>
+                        <option value="none">None (Base Case)</option>
+                        <option value="job-hike">Job Change (+20% income, $5k cost at month 24)</option>
+                        <option value="sabbatical">Sabbatical (no income months 12-18)</option>
+                        <option value="emergency">Emergency ($10k expense at month 36)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <ion-icon name="rocket-outline"></ion-icon>
+                    Run Simulation
+                </button>
+            </form>
+        </aside>
+
+        <main class="main-content">
+            <div class="kpi-grid">
+                <div class="kpi-card kpi-green">
+                    <div class="kpi-icon">
+                        <ion-icon name="trending-up-outline"></ion-icon>
+                    </div>
+                    <div class="kpi-content">
+                        <h3>Base Net Worth</h3>
+                        <p class="kpi-value" id="baseNetWorth">$0</p>
+                        <span class="kpi-label">10-year projection</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card kpi-red">
+                    <div class="kpi-icon">
+                        <ion-icon name="time-outline"></ion-icon>
+                    </div>
+                    <div class="kpi-content">
+                        <h3>Goal Timeline</h3>
+                        <p class="kpi-value" id="goalTime">--</p>
+                        <span class="kpi-label">months to goal</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card kpi-blue">
+                    <div class="kpi-icon">
+                        <ion-icon name="git-branch-outline"></ion-icon>
+                    </div>
+                    <div class="kpi-content">
+                        <h3>Scenario Impact</h3>
+                        <p class="kpi-value" id="scenarioImpact">$0</p>
+                        <span class="kpi-label">vs base case</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h2>
+                        <ion-icon name="stats-chart-outline"></ion-icon>
+                        Net Worth Trajectory (120 Months)
+                    </h2>
+                    <div class="chart-legend">
+                        <span class="legend-item legend-base">Base Case</span>
+                        <span class="legend-item legend-best">Best Case</span>
+                        <span class="legend-item legend-worst">Worst Case</span>
+                        <span class="legend-item legend-scenario">What-If</span>
+                    </div>
+                </div>
+                <canvas id="projectionChart"></canvas>
+            </div>
+
+            <div class="insights-grid">
+                <div class="insights-card risks-card">
+                    <h3>
+                        <ion-icon name="warning-outline"></ion-icon>
+                        Risk Alerts
+                    </h3>
+                    <div id="riskAlerts" class="insights-content">
+                        <p class="placeholder">Run simulation to see risk alerts</p>
+                    </div>
+                </div>
+
+                <div class="insights-card insights-positive">
+                    <h3>
+                        <ion-icon name="bulb-outline"></ion-icon>
+                        Key Insights
+                    </h3>
+                    <div id="keyInsights" class="insights-content">
+                        <p class="placeholder">Run simulation to see insights</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
